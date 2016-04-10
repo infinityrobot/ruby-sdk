@@ -1,4 +1,5 @@
 require_relative 'riq_obj'
+using RIQExtensions
 
 # RIQ module.
 module RIQ
@@ -60,7 +61,7 @@ module RIQ
     # @param name [Symbol or String] field name
     # @return [Hash, nil] field attributes
     def field_by_name(name = nil)
-      @fields.find { |h| symbolize(h[:name]) == symbolize(name) }
+      @fields.find { |h| h[:name].to_snake == name.to_snake }
     end
 
     # Returns the attributes of a field found by ID
@@ -122,7 +123,7 @@ module RIQ
     def list_option_by_name(field_name = nil, option_name = nil)
       list_options = list_options(field_name)
       return nil unless list_options
-      list_options.find { |h| symbolize(h[:display]) == symbolize(option_name) }
+      list_options.find { |h| h[:display].to_snake == option_name.to_snake }
     end
 
     # Returns a list options's ID
@@ -159,10 +160,6 @@ module RIQ
       @title = obj[:title]
       @type = obj[:listType]
       @fields = obj[:fields]
-    end
-
-    def symbolize(string)
-      string.to_s.downcase.tr(' ', '_').to_sym
     end
   end
 
