@@ -5,7 +5,10 @@ module RIQ
   # A List is an object that can be created & customized by a User to represent
   # Accounts (companies) or Contacts (people) in a process (sales pipeline).
   class List < RIQObject
-    # can't create a list through API, so these don't need to write
+    # Constants.
+    INTEGER_REGEXP = /\A[-+]?\d+\z/
+
+    # Can't create a list through API, so these don't need to write
     attr_reader :title
     attr_reader :type
     attr_reader :list_items
@@ -42,15 +45,93 @@ module RIQ
       raise NotImplementedError, "Lists can't be edited through the API"
     end
 
-    # Gets field if it exists
-    # @param id [String, Integer] field ID
-    # @return [Hash, nil] info on the field specified
-    def fields(id = nil)
-      unless id.nil?
-        @fields.select{|f| f[:id] == id.to_s}.first
+    # Returns the attributes of a provided field
+    # @param lookup [Symbol, String or Integer] field name or ID
+    # @return [Hash, nil] field attributes
+    def field(lookup = nil)
+      if !(lookup.to_s =~ INTEGER_REGEXP).nil?
+        field_by_id(lookup)
       else
-        @fields
+        field_by_name(lookup)
       end
+    end
+
+    # Returns the attributes of a field found by name
+    # @param name [Symbol or String] field name
+    # @return [Hash, nil] field attributes
+    def field_by_name(name = nil)
+      @fields.find { |h| symbolize(h[:name]) == symbolize(name) }
+    end
+
+    # Returns the attributes of a field found by ID
+    # @param id [Integer or String] field ID
+    # @return [Hash, nil] field attributes
+    def field_by_id(id = nil)
+      @fields.find { |h| h[:id] == id.to_s }
+    end
+
+    # Alias of #field which returns all fields if no lookup found
+    # @param lookup [String, Integer] field name or ID
+    # @return [Hash, nil] info on the field specified
+    def fields(lookup = nil)
+      lookup ? field(lookup) : @fields
+    end
+
+    # Returns a field's ID
+    # @param lookup [Symbol, String or Integer] field name or ID
+    # @return [Integer, nil] field ID
+    def field_id(lookup = nil)
+      field = field(lookup)
+      field[:id].to_i if field
+    end
+
+    # Returns hash of available list options for a given name
+    # @param lookup [Symbol, String or Integer] field name or ID
+    # @return [Hash, nil] list options
+    def list_options(lookup = nil)
+      field = field(lookup)
+      field.dig(:list_options) if field
+    end
+
+    # Returns the attributes of the provided list option
+    # @param field_name [Symbol, String or Integer] field name or ID
+    # @param lookup [Symbol, String or Integer] list option name or ID
+    # @return [Hash, nil] field attributes
+    def list_option(field_name = nil, lookup = nil)
+      if !(lookup.to_s =~ INTEGER_REGEXP).nil?
+        list_option_by_id(field_name, lookup)
+      else
+        list_option_by_name(field_name, lookup)
+      end
+    end
+
+    # Returns the attributes of the provided list option
+    # @param field_name [Symbol, String or Integer] field ID
+    # @param option_id [Symbol, String or Integer] list option ID
+    # @return [Hash, nil] field attributes
+    def list_option_by_id(field_name = nil, option_id = nil)
+      list_options = list_options(field_name)
+      return nil unless list_options
+      list_options.find { |h| h[:id] == option_id.to_s }
+    end
+
+    # Returns the attributes of the provided list option
+    # @param field_name [Symbol, String or Integer] field ID
+    # @param option_name [Symbol, String or Integer] list option name
+    # @return [Hash, nil] field attributes
+    def list_option_by_name(field_name = nil, option_name = nil)
+      list_options = list_options(field_name)
+      return nil unless list_options
+      list_options.find { |h| symbolize(h[:display]) == symbolize(option_name) }
+    end
+
+    # Returns a list options's ID
+    # @param field_name [Symbol, String or Integer] field ID
+    # @param lookup [Symbol, String or Integer] list option name or ID
+    # @return [Integer, nil] list option ID
+    def list_option_id(field_name = nil, lookup = nil)
+      list_option = list_option(field_name, lookup)
+      list_option[:id].to_i if list_option
     end
 
     # Convenience method for fetching or creating a listitem from the given list
@@ -78,6 +159,10 @@ module RIQ
       @title = obj[:title]
       @type = obj[:listType]
       @fields = obj[:fields]
+    end
+
+    def symbolize(string)
+      string.to_s.downcase.tr(' ', '_').to_sym
     end
   end
 
