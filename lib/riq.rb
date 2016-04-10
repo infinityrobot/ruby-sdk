@@ -13,15 +13,11 @@ module RIQExtensions
     end
 
     def to_snake
-      # could also change this to self.split(/(?=[A-Z])/).join('_').downcase
-      a = self.to_s.split('')
-      n = []
-      a.each do |l|
-        n << '_' if l.is_upper_char?
-        n << l.downcase
-      end
-      n = n[1..-1] if n.first == '_'
-      n.join.to_sym
+      to_s.to_snake.to_sym
+    end
+
+    def to_snym
+      to_snake
     end
   end
 
@@ -35,7 +31,16 @@ module RIQExtensions
     end
 
     def to_snake
-      to_sym.to_snake
+      gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+        .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+        .tr('-', '_')
+        .gsub(/\s/, '_')
+        .gsub(/__+/, '_')
+        .downcase
+    end
+
+    def to_snym
+      to_snake.to_sym
     end
   end
 
