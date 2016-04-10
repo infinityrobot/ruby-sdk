@@ -18,7 +18,7 @@ module RIQ
     #   RIQ::ListItem.new
     #   # with a list id
     #   RIQ::ListItem(lid: 'abc123') # OR RIQ.list('abc123').list_item
-    def initialize(id = nil, lid: nil)
+    def initialize(id = nil, lid = nil)
       if id.is_a? Hash
         # init with data
         super(id)
