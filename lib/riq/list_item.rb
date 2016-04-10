@@ -113,7 +113,7 @@ module RIQ
         @account_id = obj[:account_id]
         @contact_ids = obj[:contact_ids] || []
         @modified_date = obj[:modified_date].cut_milis if obj[:modified_date]
-        @created_date = obj[:creaeted_date].cut_milis if obj[:creaeted_date]
+        @created_date = obj[:created_date].cut_milis if obj[:created_date]
       else
         @id = nil
         @list_id = nil
