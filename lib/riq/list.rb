@@ -61,7 +61,7 @@ module RIQ
     # @param name [Symbol or String] field name
     # @return [Hash, nil] field attributes
     def field_by_name(name = nil)
-      @fields.find { |h| h[:name].to_snake == name.to_snake }
+      @fields.find { |h| h[:name].to_snym == name.to_snym }
     end
 
     # Returns the attributes of a field found by ID
@@ -123,7 +123,7 @@ module RIQ
     def list_option_by_name(field_name = nil, option_name = nil)
       list_options = list_options(field_name)
       return nil unless list_options
-      list_options.find { |h| h[:display].to_snake == option_name.to_snake }
+      list_options.find { |h| h[:display].to_snym == option_name.to_snym }
     end
 
     # Returns a list options's ID
