@@ -33,6 +33,10 @@ module RIQExtensions
     def is_lower_char?
       !self[/[a-z]/].nil? && self.length == 1
     end
+
+    def to_snake
+      to_sym.to_snake
+    end
   end
 
   refine Fixnum do
