@@ -185,7 +185,7 @@ module RIQ
     def init_from(obj)
       @id = obj[:id]
       @title = obj[:title]
-      @type = obj[:listType]
+      @type = obj[:list_type]
       @fields = obj[:fields]
     end
   end
