@@ -135,6 +135,33 @@ module RIQ
       list_option[:id].to_i if list_option
     end
 
+    # Returns a coded Hash with all inputs converted to an API digestible Hash.
+    # @param field_values [Hash] Hash of field values
+    # @return [Hash, nil] field values coded with relevant IDs
+    def coded_field_values(field_values = nil)
+      return nil unless field_values
+      coded_values = {}
+      field_values.each do |k, v|
+        value = v.is_a?(Symbol) ? list_option_id(k, v) : v
+        coded_values[field_id(k)] = value
+      end
+      coded_values
+    end
+
+    # Returns a Hash with a ready to submit list item properties hash for the
+    # specified list.
+    # @param options [Hash] Hash of property options
+    def list_item_properties(properties = {})
+      {
+        id: properties[:id],
+        list_id: @id,
+        name: @title,
+        contact_ids: [properties[:contact_ids]].flatten,
+        account_id: properties[:account_id],
+        field_values: coded_field_values(properties[:field_values])
+      }
+    end
+
     # Convenience method for fetching or creating a listitem from the given list
     # @param oid [String, nil] ObjectId
     def list_item(oid = nil)
