@@ -48,7 +48,7 @@ module RIQ
       # weird workaround for fetching node on init
       if lid.nil? && !oid.nil?
         "lists/#{oid}"
-      else  
+      else
         "lists/#{lid || @list_id}/listitems/#{oid}"
       end
     end
@@ -82,7 +82,7 @@ module RIQ
     end
 
     # @overload field_value(key)
-    #   @param key [String, Integer] 
+    #   @param key [String, Integer]
     #   @return [String, Array] Value of key
     # @overload field_value(key, value)
     #   Sets key to value
