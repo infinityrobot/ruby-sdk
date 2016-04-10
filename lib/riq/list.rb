@@ -1,15 +1,15 @@
 require_relative 'riq_obj'
 
+# RIQ module.
 module RIQ
-  # A List is an object that can be created and customized by a User to represent 
-  # Accounts (companies) or Contacts (people) in a process (such as a sales pipeline).
+  # A List is an object that can be created & customized by a User to represent
+  # Accounts (companies) or Contacts (people) in a process (sales pipeline).
   class List < RIQObject
     # can't create a list through API, so these don't need to write
     attr_reader :title
     attr_reader :type
     attr_reader :list_items
-    # for consistency
-    alias_method :name, :title
+    alias name title
 
     # (see RIQObject#initialize)
     def initialize(id = nil)
@@ -60,26 +60,30 @@ module RIQ
     end
 
     private
-    
+
     def init(obj = nil)
-      unless obj.nil?
-        @id = obj[:id]
-        @title = obj[:title]
-        @type = obj[:listType]
-        @fields = obj[:fields]
-      else
-        @id = nil
-        @title = nil
-        @type = nil
-        @fields = nil
-      end
+      obj ? init_from(obj) : init_nil
       self
+    end
+
+    def init_nil
+      @id = nil
+      @title = nil
+      @type = nil
+      @fields = nil
+    end
+
+    def init_from(obj)
+      @id = obj[:id]
+      @title = obj[:title]
+      @type = obj[:listType]
+      @fields = obj[:fields]
     end
   end
 
   class << self
     # Convenience method to create new Lists
-    # @param id [String, nil] create a blank List object or 
+    # @param id [String, nil] create a blank List object or
     #   fetch an existing one by id.
     # @return [List]
     def list(id = nil)
