@@ -23,7 +23,7 @@ module RIQExtensions
       n = n[1..-1] if n.first == '_'
       n.join.to_sym
     end
-  end 
+  end
 
   refine String do
     def is_upper_char?
@@ -74,7 +74,7 @@ module RIQExtensions
     def from_raw
       return {} if self.empty?
       o = {}
-      self.each do |k,v| 
+      self.each do |k,v|
         if v.is_a?(Array) # && v.length > 0 && v.first.include?(:raw)
           r = v.map{|x| x[:raw]}
           r = r.first if r.size == 1
