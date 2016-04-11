@@ -152,14 +152,11 @@ module RIQ
     # specified list.
     # @param options [Hash] Hash of property options
     def list_item_properties(properties = {})
-      {
-        id: properties[:id],
-        list_id: @id,
-        name: @title,
-        contact_ids: [properties[:contact_ids]].flatten,
-        account_id: properties[:account_id],
-        field_values: coded_field_values(properties[:field_values])
-      }
+      props = { id: properties[:id], list_id: @id, name: @title,
+                contact_ids: [properties[:contact_ids]].flatten,
+                account_id: properties[:account_id],
+                field_values: coded_field_values(properties[:field_values]) }
+      props.delete_if { |_k, v| v.nil? || v.is_a?(Array) && v.compact.empty? }
     end
 
     # Convenience method for fetching or creating a listitem from the given list
