@@ -145,7 +145,7 @@ module RIQ
         value = v.is_a?(Symbol) ? list_option_id(k, v) : v
         coded_values[field_id(k)] = value
       end
-      coded_values
+      coded_values.delete_if { |k, v| k.nil? || v.nil? }
     end
 
     # Returns a Hash with a ready to submit list item properties hash for the
